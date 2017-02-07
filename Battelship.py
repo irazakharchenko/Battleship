@@ -131,20 +131,51 @@ def generate_field():
     """
     lmass = [4,3,3,2,2,2,1,1,1,1]
     table = []
+    massx = {}
     for i in range(10):
         table.append([' ']*10)
+        # y : suitable Xes
+        massx[i] = list(range(10))
     for sizes in lmass:
-        direct = random.randint(0, 1)
-        if direct:
-            y = random.randint(0, 9)
-            x = random.randint(0, 10 - sizes)
 
-            for i in range(sizes):
-                table[y][x+i] = '*'
-        else:
-            y = random.randint(0, 10 - sizes)
-            x = random.randint(0, 9)
-            for i in range(sizes):
-                table[y][x+i] = '*'
 
-#generate_field()
+        y = random.randint(0, 9)
+
+        x = random.choice(massx[y])
+
+        direction = []
+        b = True
+        if x + 1 in massx[y] :
+            for i in range(sizes):
+                if x + i + 1 not in massx[y] and b:
+                    b = False
+
+            if b:
+                direction.append(1)
+        b = True
+        if x - 1 in massx[y] :
+            for i in range(sizes):
+                if x - i - 1 not in massx[y] and b:
+                    b = False
+            if b:
+                direction.append(2)
+        b = True
+        if y + sizes - 1 < 10 and x in massx[y+1]:
+            for i in range(sizes):
+                if x not in massx[y + 1 + i] and b:
+                    b = False
+            if b:
+                direction.append(3)
+        b = True
+        if y - sizes + 1 > -1 and x in massx[y -1]:
+            for i in range(sizes):
+                if x not in massx[y -1 - i] and b:
+                    b = False
+            if b:
+                direction.append(4)
+
+
+
+
+
+generate_field()
