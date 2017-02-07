@@ -1,3 +1,4 @@
+import random
 def read_field(file):
     """
     (str) -> (data)
@@ -13,7 +14,7 @@ def read_field(file):
         #print(cont)
         return cont
 
-def has_ship(data, coord):
+def has_ship(data, coord, b = False):
     """
     (list, tuple) -> (bool)
 
@@ -23,6 +24,11 @@ def has_ship(data, coord):
     """
     #print(coord)
     #print(ord(coord[0]) - ord('A'))
+    if b:
+        if data[coord[0]][coord[1]] == ' ':
+            return False
+        else:
+            return True
     if data[ord(coord[0]) - ord('A')][coord[1]-1] == '*' or data[ord(coord[0]) - ord('A')][coord[1]-1] == 'X':
         return True
     elif data[ord(coord[0]) - ord('A')][coord[1]-1] == ' ':
@@ -118,3 +124,27 @@ def field_to_str(tem):
         ftsResult += el
     return ftsResult
 #print(field_to_str(read_field('field.txt')))
+
+def generate_field():
+    """
+    () -> list
+    """
+    lmass = [4,3,3,2,2,2,1,1,1,1]
+    table = []
+    for i in range(10):
+        table.append([' ']*10)
+    for sizes in lmass:
+        direct = random.randint(0, 1)
+        if direct:
+            y = random.randint(0, 9)
+            x = random.randint(0, 10 - sizes)
+
+            for i in range(sizes):
+                table[y][x+i] = '*'
+        else:
+            y = random.randint(0, 10 - sizes)
+            x = random.randint(0, 9)
+            for i in range(sizes):
+                table[y][x+i] = '*'
+
+generate_field()
