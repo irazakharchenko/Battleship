@@ -142,7 +142,17 @@ def generate_field():
         y = random.randint(0, 9)
 
         x = random.choice(massx[y])
+        b = False
+        while not b:
+            if y > 0 and (x - 1 not in massx[y-1] or x + 1 not in massx[y-1]):
+                b = False
+            else:
+                b = True
+            if y < 9 and (x -1 not in massx[y +1] or x + 1 not in massx[y +1])
+                b = False
+            y = random.randint(0, 9)
 
+            x = random.choice(massx[y])
         direction = []
         b = True
         if x + 1 in massx[y] :
