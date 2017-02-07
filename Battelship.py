@@ -56,7 +56,7 @@ def is_valid(dataiv):
     if len(dataiv) == 10 :
         for el in dataiv:
             if len(dataiv) != 10:
-                retursn False
+                return False
 
     else:
         return False
