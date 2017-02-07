@@ -147,4 +147,4 @@ def generate_field():
             for i in range(sizes):
                 table[y][x+i] = '*'
 
-generate_field()
+#generate_field()
