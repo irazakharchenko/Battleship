@@ -112,6 +112,7 @@ def is_valid(dataiv):
 #print(is_valid(read_field('field.txt')))
 #print(read_field('field.txt'))
 
+
 def field_to_str(tem):
     r"""
     (list) -> str
@@ -158,12 +159,13 @@ def generate_field():
         direction = []
         while direction == []:
             y = random.randint(0, 9)
-
+            while massx[y] == []:
+                y = random.randint(0, 9)
             x = random.choice(massx[y])
             b = True
             if x + 1 in massx[y] :
                 for i in range(sizes):
-                    if x + i  not in massx[y] and b:
+                    if x + i + 1 not in massx[y] and b:
                         b = False
 
                 if b:
@@ -172,159 +174,174 @@ def generate_field():
             b = True
             if x - 1 in massx[y] :
                 for i in range(sizes):
-                    if x - i  not in massx[y] and b:
+                    if x - i - 1 not in massx[y] and b:
                         b = False
                 if b:
                     direction.append(2)
             b = True
-            if y + sizes - 1 < 10 and x in massx[y+1]:
+            if y + sizes - 1 < 9 and x in massx[y+1]:
                 for i in range(sizes):
                     if x not in massx[y  + i] and b:
                         b = False
                 if b:
                     direction.append(3)
             b = True
-            if y - sizes + 1 > -1 and x in massx[y -1]:
+            if y - sizes + 1 > 0 and x in massx[y - 1]:
                 for i in range(sizes):
-                    if x not in massx[y  - i] and b:
+                    if x not in massx[y - i] and b:
                         b = False
                 if b:
                     direction.append(4)
 
         direct = random.choice(direction)
+        #print(direct)
         if direct == 1:
             for i in range(sizes):
+                #print('y = ', y, ' x= ', x, ' i=', i)
+                #print(massx)
                 table[y][x+i] = '*'
                 massx[y].remove(x+i)
-                if y > 0 and x + i in table[y-1]:
+                #print(x+i, 'table', table[y-1])
+                if y > 0 and x + i in massx[y-1]:
                     table[y-1][x+i] = 'n'
                     massx[y -1].remove(x + i)
-                if y < 9 and x + i in table[y + 1]:
+                if y < 9 and x + i in massx[y + 1]:
                     table[y+1][x+i] = 'n'
                     massx[y + 1].remove(x + i)
             if x > 0:
-                if y > 0 and x - 1 in table[y - 1]:
+                if y > 0 and x - 1 in massx[y - 1]:
                     table[y-1][x-1] = 'n'
                     massx[y-1].remove(x-1)
-                if x -1 in table[y]:
+                if x -1 in massx[y]:
                     table[y][x-1] = 'n'
-                    massx[y].remove(x -1)
-                if y < 9 and x - 1 in table[y + 1]:
+                    massx[y].remove(x - 1)
+                if y < 9 and x - 1 in massx[y + 1]:
                     table[y + 1][x-1] = 'n'
                     massx[y+1].remove(x-1)
             if x + sizes -1 < 9:
                 c = x + sizes
-                if y > 0 and c in table[y-1]:
+                if y > 0 and c in massx[y-1]:
                     table[y-1][c] = 'n'
                     massx[y-1].remove(c)
-                if c in table[y]:
+                if c in massx[y]:
                     table[y][c] = 'n'
                     massx[y].remove(c)
-                if y < 9 and c in table[y + 1]:
+                if y < 9 and c in massx[y + 1]:
                     table[y+1][c] = 'n'
                     massx[y+1].remove(c)
         elif direct == 2:
             for i in range(sizes):
+                #print('y = ', y, ' x= ', x, ' i=', i)
+                #print(massx)
                 table[y][x-i] = '*'
                 massx[y].remove(x-i)
-                if y > 0 and x - i in table[y-1]:
+                if y > 0 and x - i in massx[y-1]:
                     table[y-1][x-i] = 'n'
                     massx[y -1].remove(x - i)
-                if y < 9 and x - i in table[y + 1]:
+                if y < 9 and x - i in massx[y + 1]:
                     table[y+1][x-i] = 'n'
                     massx[y + 1].remove(x - i)
 
             if x < 9:
-                if y > 0 and x + 1 in table[y - 1]:
+                if y > 0 and x + 1 in massx[y - 1]:
                     table[y-1][x+1] = 'n'
                     massx[y-1].remove(x+1)
-                if x +1 in table[y]:
+                if x +1 in massx[y]:
                     table[y][x+1] = 'n'
-                    massx[y].remove(x +1)
-                if y < 9 and x + 1 in table[y + 1]:
+                    massx[y].remove(x + 1)
+                if y < 9 and x + 1 in massx[y + 1]:
                     table[y + 1][x+1] = 'n'
                     massx[y+1].remove(x+1)
 
             if x - sizes + 1 > 0:
                 c = x - sizes
-                if y > 0 and c in table[y-1]:
+                if y > 0 and c in massx[y-1]:
                     table[y-1][c] = 'n'
                     massx[y-1].remove(c)
-                if c in table[y]:
+                if c in massx[y]:
                     table[y][c] = 'n'
                     massx[y].remove(c)
-                if y < 9 and c in table[y + 1]:
+                if y < 9 and c in massx[y + 1]:
                     table[y+1][c] = 'n'
                     massx[y+1].remove(c)
 
         elif direct == 3:
+
             for i in range(sizes):
+                #print('y = ', y, ' x= ', x, ' i=', i)
+                #print(massx)
                 table[y+i][x] = '*'
                 massx[y+i].remove(x)
-                if x>0 and x-1 in table[y+i]:
-                    table[y+i][x-1] = 'n'
+                if x>0 and x-1 in massx[y+i]:
+
+                    table[y+i][(x-1)] = 'n'
                     massx[y + i].remove(x -1)
-                if x < 9 and x + 1 in table[y + i]:
+                if x < 9 and x + 1 in massx[y + i]:
                     table[y+i][x+1] = 'n'
                     massx[y + i].remove(x + 1)
 
             if y > 0:
-                if x > 0 and  x - 1 in table[y - 1]:
+                if x > 0 and  x - 1 in massx[y - 1]:
                     table[y-1][x-1] = 'n'
                     massx[y-1].remove(x-1)
-                if x  in table[y -1]:
+                if x  in massx[y -1]:
                     table[y-1][x] = 'n'
                     massx[y-1].remove(x )
-                if x < 9 and x +1  in table[y - 1]:
+                if x < 9 and x +1  in massx[y - 1]:
                     table[y - 1][x+1] = 'n'
                     massx[y-1].remove(x+1)
 
             if y + sizes -1 < 9:
                 c = y + sizes
-                if x > 0 and x-1 in table[c]:
+                if x > 0 and x-1 in massx[c]:
                     table[c][x-1] = 'n'
                     massx[c].remove(x-1)
-                if x in table[c]:
+                if x in massx[c]:
                     table[c][x] = 'n'
                     massx[c].remove(x)
-                if x < 9 and x + 1 in table[c]:
+                if x < 9 and x + 1 in massx[c]:
                     table[c][x+1] = 'n'
                     massx[c].remove(x+1)
 
         else:
+
             for i in range(sizes):
+                #print('y = ', y, ' x= ', x, ' i=', i)
+                #print(massx)
                 table[y-i][x] = '*'
                 massx[y-i].remove(x)
-                if x>0 and x-1 in table[y-i]:
+                if x>0 and x-1 in massx[y-i]:
                     table[y-i][x-1] = 'n'
                     massx[y - i].remove(x -1)
-                if x < 9 and x + 1 in table[y - i]:
+                if x < 9 and x + 1 in massx[y - i]:
                     table[y-i][x+1] = 'n'
                     massx[y - i].remove(x + 1)
 
-            if y <  9:
-                if x > 0 and  x - 1 in table[y + 1]:
+            if y < 9:
+                if x > 0 and  x - 1 in massx[y + 1]:
                     table[y+1][x-1] = 'n'
                     massx[y+1].remove(x-1)
-                if x  in table[y +1]:
+                if x  in massx[y +1]:
                     table[y+1][x] = 'n'
                     massx[y+1].remove(x )
-                if x < 9 and x +1  in table[y + 1]:
+                if x < 9 and x +1  in massx[y + 1]:
                     table[y + 1][x+1] = 'n'
                     massx[y+1].remove(x+1)
 
             if y - sizes +1 > 0:
                 c = y - sizes
-                if x > 0 and x-1 in table[c]:
+                if x > 0 and x-1 in massx[c]:
                     table[c][x-1] = 'n'
                     massx[c].remove(x-1)
-                if x in table[c]:
+                if x in massx[c]:
                     table[c][x] = 'n'
                     massx[c].remove(x)
-                if x < 9 and x + 1 in table[c]:
+                if x < 9 and x + 1 in massx[c]:
                     table[c][x+1] = 'n'
                     massx[c].remove(x+1)
-
+        #for lines in table:
+            #print(lines, '\n')
+        #print('\n')
 
 
     gfResult = []
@@ -335,7 +352,7 @@ def generate_field():
                 table[iy][ix] = ' '
             line += table[iy][ix]
         gfResult.append(line)
-    print(gfResult)
+    #print(gfResult)
     return field_to_str(gfResult)
 
 
