@@ -82,6 +82,7 @@ def is_valid(dataiv):
     if len(dataiv) == 10 :
         for el in dataiv:
             if len(dataiv) != 10:
+                print('t')
                 return False
         mass = {4: 0, 3: 0, 2: 0, 1: 0}
         for let in 'ABCDEFGHIJ':
@@ -89,6 +90,7 @@ def is_valid(dataiv):
                 len_ship = ship_size(dataiv, (let, num))
                 if len_ship:
                     if len_ship> 4:
+                        print('y')
                         return False
                     else:
                         mass[len_ship] += 1
@@ -104,9 +106,11 @@ def is_valid(dataiv):
                             return False
 
         if mass[4] != 4 or mass[3] != 6 or mass[2] != 8 or mass[1] != 4:
+            print('g')
             return False
         return True
     else:
+        print('l')
         return False
 
 #print(is_valid(read_field('field.txt')))
