@@ -6,7 +6,8 @@ class Ship:
     Represent ships coordinates and are they hit.
     '''
 
-    def __init__(self, bow: object = (0, 0), horizontal: object = True, length: object = -1, hit: object = False) -> object:
+    def __init__(self, bow: object = (0, 0), horizontal: object = True, length: object = -1, hit: object = False) \
+            -> object:
         '''
         Initialize direction of ship, its left up coordinate, its length and is it hit.
         :param bow: tuple
@@ -25,33 +26,38 @@ class Ship:
         :param hi: boolean (hit)
         :return:
         '''
+        assert isinstance(b, object)
         self.bow = b
+        assert isinstance(l, object)
         self.__length = l
+        assert isinstance(ho, object)
         self.horizontal = ho
         assert isinstance(hi, object)
         self.__hit = hi
 
-        # def shoot_at(self):
+        def shoot_at_s(self):
+            if not self.__hit:
 
+                self.__hit = True
 
-class Field(Ship):
+class Field():
     '''
     Generete field
     '''
 
-    def __init__(self, coor):
-    '''
-    coor - tuple(int,int)
-    '''
-        super().__init__()
+    def __init__(self, coor = (0,0)):
+        '''
+        coor - tuple(int(0..9),int(0..9))
+        '''
+        #super().__init__()
         self.assig(coor)
 
 
-    def assig(self, coora):
+    def assig(self, coora = (0,0)):
         self.field = []
-        self.ships = []
+        self.__ships = []
         for i in range(10):
-            self.ships.append(10*[Ship()])
+            self.__ships.append(10*[None])
         self.coor = coora
 
     def generate_field(self):
@@ -126,7 +132,7 @@ class Field(Ship):
                     # print('y = ', y, ' x= ', x, ' i=', i)
                     # print(massx)
                     table[y][x + i] = '*'
-                    self.ships[y][x+i] = Ship((y, x), True, sizes)
+                    self.__ships[y][x+i] = Ship((y, x), True, sizes)
                     massx[y].remove(x + i)
                     # print(x+i, 'table', table[y-1])
                     if y > 0 and x + i in massx[y - 1]:
@@ -161,7 +167,7 @@ class Field(Ship):
                     # print('y = ', y, ' x= ', x, ' i=', i)
                     # print(massx)
                     table[y][x - i] = '*'
-                    self.ships[y][x - i] = Ship((y, x - sizes), True, sizes)
+                    self.__ships[y][x - i] = Ship((y, x - sizes), True, sizes)
                     massx[y].remove(x - i)
                     if y > 0 and x - i in massx[y - 1]:
                         table[y - 1][x - i] = 'n'
@@ -199,7 +205,7 @@ class Field(Ship):
                     # print('y = ', y, ' x= ', x, ' i=', i)
                     # print(massx)
                     table[y + i][x] = '*'
-                    self.ships[y + i][x] = Ship((y, x), False, sizes)
+                    self.__ships[y + i][x] = Ship((y, x), False, sizes)
                     massx[y + i].remove(x)
                     if x > 0 and x - 1 in massx[y + i]:
                         table[y + i][(x - 1)] = 'n'
@@ -237,7 +243,7 @@ class Field(Ship):
                     # print('y = ', y, ' x= ', x, ' i=', i)
                     # print(massx)
                     table[y - i][x] = '*'
-                    self.ships[y - i][x] = Ship((y - sizes, x), False, sizes)
+                    self.__ships[y - i][x] = Ship((y - sizes, x), False, sizes)
                     massx[y - i].remove(x)
                     if x > 0 and x - 1 in massx[y - i]:
                         table[y - i][x - 1] = 'n'
@@ -271,7 +277,8 @@ class Field(Ship):
                         # for lines in table:
                         # print(lines, '\n')
                         # print('\n')
-
+            self.coor = (y,x)
+        '''
         gfResult = []
         for iy in range(10):
             line = ''
@@ -280,15 +287,34 @@ class Field(Ship):
                     table[iy][ix] = ' '
                 line += table[iy][ix]
             gfResult.append(line)
-        # print(gfResult)
-        self.field = gfResult
-        print(self.ships)
+        print(gfResult)
+        '''
+        for iy in range(10):
+            line = ''
+            for ix in range(10):
+                if table[iy][ix] == 'n':
+                    table[iy][ix] = ' '
+        self.field = table
+        print('self.__ships = ', self.__ships)
+        print('self.coor = ', self.coor)
 
     def shoot_at(self):
+        #print('self.field = ', self.field)
+        if self.__ships[self.coor[0]][self.coor[1]] != None:
+            print('self.__ships[self.coor[0]][self.coor[1]] = ', self.__ships[self.coor[0]][self.coor[1]])
+            self.field[self.coor[0]][self.coor[1]] = 'X'
+            self.__ships[self.coor[0]][self.coor[1]].__hit = True
+            print('yey')
+            print(self.__ships[self.coor[0]][self.coor[1]])
+            print('self.field = ', self.field)
 
 
 
 
 
-#n = Field().generate_field()
+n = Field()
+n.generate_field()
+
+
+n.shoot_at()
 
