@@ -67,8 +67,10 @@ class Field():
         lmass = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
         table = []
         massx = {}
+        self.lFieldWithoutShips = []
         for i in range(10):
             table.append([' '] * 10)
+            self.lFieldWithoutShips.append([' '] * 10)
             # y : suitable Xes
             massx[i] = list(range(10))
         for sizes in lmass:
@@ -301,13 +303,28 @@ class Field():
     def shoot_at(self):
         #print('self.field = ', self.field)
         if self.__ships[self.coor[0]][self.coor[1]] != None:
-            print('self.__ships[self.coor[0]][self.coor[1]] = ', self.__ships[self.coor[0]][self.coor[1]])
+            #print('self.__ships[self.coor[0]][self.coor[1]] = ', self.__ships[self.coor[0]][self.coor[1]])
             self.field[self.coor[0]][self.coor[1]] = 'X'
+            self.lFieldWithoutShips[self.coor[0]][self.coor[1]] = 'X'
             self.__ships[self.coor[0]][self.coor[1]].__hit = True
-            print('yey')
-            print(self.__ships[self.coor[0]][self.coor[1]])
-            print('self.field = ', self.field)
+            #print('yey')
+            #print(self.__ships[self.coor[0]][self.coor[1]])
+            #print('self.field = ', self.field)
+        else:
+            self.field[self.coor[0]][self.coor[1]] = 'o'
+            self.lFieldWithoutShips[self.coor[0]][self.coor[1]] = 'o'
 
+
+    def field_without_ships(self):
+        return self.lFieldWithoutShips
+
+    def field_with_ships(self):
+        return self.field
+
+
+class Player:
+    def __init__(self, name):
+        self.__name = name
 
 
 
