@@ -1,5 +1,6 @@
 import random
 from string import ascii_lowercase
+from os import system
 
 class Ship:
     '''
@@ -54,6 +55,11 @@ class Field():
 
 
     def assig(self, coora = (0,0)):
+        '''
+        assigment of __ships, field and coor
+        :param coora:
+        :return:
+        '''
         self.field = []
         self.__ships = []
         for i in range(10):
@@ -279,7 +285,7 @@ class Field():
                         # for lines in table:
                         # print(lines, '\n')
                         # print('\n')
-            self.coor = (y,x)
+            #self.coor = (y,x)
         '''
         gfResult = []
         for iy in range(10):
@@ -301,12 +307,18 @@ class Field():
         #print('self.coor = ', self.coor)
 
     def shoot_at(self):
+        '''
+        denend on where player shoot change field with coordinates
+        :return:
+        '''
         #print('self.field = ', self.field)
+        self.hitted = False
         if self.__ships[self.coor[0]][self.coor[1]] != None:
             #print('self.__ships[self.coor[0]][self.coor[1]] = ', self.__ships[self.coor[0]][self.coor[1]])
             self.field[self.coor[0]][self.coor[1]] = 'X'
             self.lFieldWithoutShips[self.coor[0]][self.coor[1]] = 'X'
             self.__ships[self.coor[0]][self.coor[1]].__hit = True
+            self.hitted = True
             #print('yey')
             #print(self.__ships[self.coor[0]][self.coor[1]])
             #print('self.field = ', self.field)
@@ -316,22 +328,43 @@ class Field():
 
 
     def field_without_ships(self):
-        return self.lFieldWithoutShips
+        '''
+        return field without ships for enemy player
+        :return:  list
+        '''
+        ResultFWOS = []
+
+        for el in self.lFieldWithoutShips:
+            stri = ''
+            for lette in el:
+                stri += lette
+            ResultFWOS.append(stri)
+        return ResultFWOS
 
     def field_with_ships(self):
-        return self.field
+        '''
+        return field with all ships for player
+        :return:
+        '''
+        ResultFWS = []
+        for el in self.field:
+            stri = ''
+            for lette in el:
+                stri += lette
+            ResultFWS.append(stri)
+        return ResultFWS
 
 
 class Player:
     '''
     have all we need from player: name and coordinates of shoot.
     '''
-    def __init__(self, name):
+    def __init__(self):
         '''
         initialise name of player.
         :param name: str
         '''
-        self.__name = name
+        self.__name = input('Please write your name ')
 
     def read_position():
         '''
@@ -357,6 +390,47 @@ class Player:
 
         return rpcoorconv
 
+
+
+class Game:
+    '''
+    connect all classes before and is main for playing
+    '''
+    def __init__(self):
+        '''
+        initialise players, fields, index of current player, generate field for 2 in field.
+        '''
+
+        self.__players = (Player(), Player())
+        self.__field = (Field(), Field())
+        self.__field[0].generate_field()
+        self.__field[1].generate_field()
+        #print(self.__field[0].field_with_ships(), '\n', self.__field[1].field_with_ships())
+        self.__current_player = 0
+        self.shoot_coord = [(0,0), (0,0)]
+
+    def G_read_position(self):
+        '''
+        read coordinates
+        :return:
+        '''
+        self.shoot_coord[self.__current_player] = self.__players[self.__current_player].read_position()
+
+    def G_field_without_ships(self):
+        '''
+        return field without ships other index's player
+        :return:
+        '''
+        return self.__field[(self.__current_player + 1) % 2].field_without_ships()
+
+    def G_field_with_ships(self):
+        '''
+
+        :return: field with ships index's player
+        '''
+        return self.__field[self.__current_player].field_with_ships()
+
+
 '''
 n = Field()
 n.generate_field()
@@ -364,6 +438,17 @@ n.generate_field()
 
 n.shoot_at()
 '''
-player1 = Player
-print(player1.read_position())
+#player1 = Player
+#print(player1.read_position())
+def start():
+    '''
+    main function which use classes Ship, Field, Player,  Game
+    :return:
+    '''
+    g = Game()
+    system('cls')
 
+
+
+
+start()
