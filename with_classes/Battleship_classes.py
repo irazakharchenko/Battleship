@@ -1,7 +1,7 @@
 import random
 from string import ascii_lowercase, ascii_uppercase
 from os import system
-
+from time import sleep
 class Ship:
     '''
     Represent ships coordinates and are they hit.
@@ -46,15 +46,15 @@ class Field():
     Generete field
     '''
 
-    def __init__(self, coor = (0,0)):
+    def __init__(self):
         '''
         coor - tuple(int(0..9),int(0..9))
         '''
         #super().__init__()
-        self.assig(coor)
+        self.assig()
 
 
-    def assig(self, coora = (0,0)):
+    def assig(self):
         '''
         assigment of __ships, field and coor
         :param coora:
@@ -62,9 +62,11 @@ class Field():
         '''
         self.field = []
         self.__ships = []
+        self.shooted_ships_coor = []
         for i in range(10):
             self.__ships.append(10*[None])
-        self.coor = coora
+
+        self.shooted = False
 
     def generate_field(self):
         """
@@ -306,26 +308,28 @@ class Field():
         #print('self.__ships = ', self.__ships)
         #print('self.coor = ', self.coor)
 
-    def shoot_at(self):
+    def shoot_at(self, coor):
         '''
         denend on where player shoot change field with coordinates
         :return:
         '''
         #print('self.field = ', self.field)
-        self.hitted = False
+        self.coor = coor
         if self.__ships[self.coor[0]][self.coor[1]] != None:
             #print('self.__ships[self.coor[0]][self.coor[1]] = ', self.__ships[self.coor[0]][self.coor[1]])
             self.field[self.coor[0]][self.coor[1]] = 'X'
             self.lFieldWithoutShips[self.coor[0]][self.coor[1]] = 'X'
             self.__ships[self.coor[0]][self.coor[1]].__hit = True
-            self.hitted = True
+            if (self.coor[0],self.coor[1]) not in self.shooted_ships_coor:
+                self.shooted_ships_coor.append((self.coor[0],self.coor[1]))
+            self.shooted = True
             #print('yey')
             #print(self.__ships[self.coor[0]][self.coor[1]])
             #print('self.field = ', self.field)
         else:
             self.field[self.coor[0]][self.coor[1]] = 'o'
             self.lFieldWithoutShips[self.coor[0]][self.coor[1]] = 'o'
-
+            self.shooted = False
 
     def field_without_ships(self):
         '''
@@ -366,7 +370,10 @@ class Player:
         '''
         self.__name = input('Please write your name ')
 
-    def read_position():
+    def p_name(self):
+        return self.__name
+
+    def read_position(self):
         '''
         take coordinates and change it in type we need.
         from letter number to tuple(number, number)
@@ -374,10 +381,11 @@ class Player:
         '''
         rpcoor = input('Please write coordinates as A7, J5 ')
         #print(ord(rpcoor[0].lower()))
+        rpcoor = [rpcoor[0], int(rpcoor[1:])]
         if rpcoor[0].lower() not in ascii_lowercase[:10]:
             rpcoorconv = (-1, -1)
         else:
-            rpcoorconv = (ord(rpcoor[0].lower()) - ord('a'), int(rpcoor[1:])-1)
+            rpcoorconv = (ord(rpcoor[0].lower()) - ord('a'), rpcoor[1]-1)
 
         while (rpcoorconv[0] > 9 or rpcoorconv[0] < 0 ) or (rpcoorconv[1] > 9 or rpcoorconv[1] < 0):
             print("Your input is incorrect. Letter should be 'A' - 'J' and number 1 - 10 \n")
@@ -423,7 +431,7 @@ class Game:
         self.__current_player = (self.__current_player + 1) % 2
         
     def name_player(self):
-        return self.current_player().__name
+        return self.current_player().p_name()
         
     def G_read_position(self):
         '''
@@ -431,20 +439,21 @@ class Game:
         :return:
         '''
         self.shoot_coord[self.__current_player] = self.__players[self.__current_player].read_position()
+        self.__field[self.__current_player].shoot_at(self.shoot_coord[self.__current_player])
 
     def G_field_without_ships(self):
         '''
         return field without ships other index's player
         :return:
         '''
-        return self.__field[(self.__current_player + 1) % 2].field_without_ships()
+        return self.__field[self.__current_player ].field_without_ships()
 
     def G_field_with_ships(self):
         '''
 
         :return: field with ships index's player
         '''
-        return self.__field[self.__current_player].field_with_ships()
+        return self.__field[(self.__current_player + 1) % 2].field_with_ships()
 
 
     def print_field(self):
@@ -455,14 +464,14 @@ class Game:
         system('cls')
         print('Game Battleship\n')
         print("It's {0}'s turn.\n ".format(self.name_player()))
-        print("It's your field.\n")
+        print("It's your field.")
 
         fws = self.G_field_with_ships()
         print(self.mass)
         for i in range(10):
-            print("{0} {1}".format(ascii_uppercase[i], fws[i]))
+            print("{0} {1}\n".format(ascii_uppercase[i], fws[i]))
 
-        print("It's your enemy's field.\n")
+        print("It's your enemy's field.")
         self.print_enemy_field()
 
     def print_enemy_field(self):
@@ -488,9 +497,59 @@ class Game:
         print('Good shoot.\n')
 
         system('cls')
-        self.end_turn()
-        print("It's {0}'s field".format(self.name_player())
+
+        while self.__field[self.__current_player].shooted:
+            self.print_field()
+
+            self.G_read_position()
+            print('Good shoot.\n')
+            system('cls')
+        else:
+            self.end_turn()
+        print("It's {0}'s field".format(self.name_player()))
         print('Your turn is end.')
+        sleep(7)
+        self.print_field()
+
+        self.G_read_position()
+        print('Good shoot.\n')
+        system('cls')
+
+        while self.__field[self.__current_player].shooted:
+            self.print_field()
+
+            self.G_read_position()
+            print('Good shoot.\n')
+            system('cls')
+        else:
+            self.end_turn()
+        print("It's {0}'s field".format(self.name_player()))
+        print('Your turn is end.')
+        sleep(7)
+
+        while len(self.__field[self.__current_player].shooted_ships_coor) < 20:
+            self.print_field()
+
+            self.G_read_position()
+            print('Good shoot.\n')
+
+            system('cls')
+
+            while self.__field[self.__current_player].shooted:
+                self.print_field()
+
+                self.G_read_position()
+                print('Good shoot.\n')
+                system('cls')
+            else:
+                self.end_turn()
+            print("It's {0}'s field".format(self.name_player()))
+            print('Your turn is end.')
+            sleep(7)
+        else:
+            self.end_turn()
+            print('Congratulations!')
+            print('Player {0} win.'.format(self.name_player()))
 
 
 
@@ -505,7 +564,8 @@ n.shoot_at()
 '''
 #player1 = Player
 #print(player1.read_position())
-
+n = Game()
+n.start()
         
 
 
