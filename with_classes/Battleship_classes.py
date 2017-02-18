@@ -1,5 +1,5 @@
 import random
-from string import ascii_lowercase
+from string import ascii_lowercase, ascii_uppercase
 from os import system
 
 class Ship:
@@ -408,7 +408,23 @@ class Game:
         #print(self.__field[0].field_with_ships(), '\n', self.__field[1].field_with_ships())
         self.__current_player = 0
         self.shoot_coord = [(0,0), (0,0)]
-
+        self.mass = ' 12345678910'
+        
+    def current_player(self):
+        '''
+        return current player
+        '''
+        return self.__players[self.__current_player]
+        
+    def end_turn(self):
+        '''
+        increase index of current_player
+        '''
+        self.__current_player = (self.__current_player + 1) % 2
+        
+    def name_player(self):
+        return self.current_player().__name
+        
     def G_read_position(self):
         '''
         read coordinates
@@ -431,6 +447,55 @@ class Game:
         return self.__field[self.__current_player].field_with_ships()
 
 
+    def print_field(self):
+        '''
+        print fields
+        :return:
+        '''
+        system('cls')
+        print('Game Battleship\n')
+        print("It's {0}'s turn.\n ".format(self.name_player()))
+        print("It's your field.\n")
+
+        fws = self.G_field_with_ships()
+        print(self.mass)
+        for i in range(10):
+            print("{0} {1}".format(ascii_uppercase[i], fws[i]))
+
+        print("It's your enemy's field.\n")
+        self.print_enemy_field()
+
+    def print_enemy_field(self):
+        '''
+        print enemy field
+        :return:
+        '''
+        fwos = self.G_field_without_ships()
+
+        print(self.mass)
+        for i in range(10):
+            print("{0} {1}".format(ascii_uppercase[i], fwos[i]))
+
+
+    def start(self):
+        '''
+        main function
+        :return:
+        '''
+        self.print_field()
+
+        self.G_read_position()
+        print('Good shoot.\n')
+
+        system('cls')
+        self.end_turn()
+        print("It's {0}'s field".format(self.name_player())
+        print('Your turn is end.')
+
+
+
+
+
 '''
 n = Field()
 n.generate_field()
@@ -440,15 +505,9 @@ n.shoot_at()
 '''
 #player1 = Player
 #print(player1.read_position())
-def start():
-    '''
-    main function which use classes Ship, Field, Player,  Game
-    :return:
-    '''
-    g = Game()
-    system('cls')
+
+        
 
 
 
 
-start()
