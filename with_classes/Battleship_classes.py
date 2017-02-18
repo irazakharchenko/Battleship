@@ -1,5 +1,5 @@
 import random
-
+from string import ascii_lowercase
 
 class Ship:
     '''
@@ -297,8 +297,8 @@ class Field():
                 if table[iy][ix] == 'n':
                     table[iy][ix] = ' '
         self.field = table
-        print('self.__ships = ', self.__ships)
-        print('self.coor = ', self.coor)
+        #print('self.__ships = ', self.__ships)
+        #print('self.coor = ', self.coor)
 
     def shoot_at(self):
         #print('self.field = ', self.field)
@@ -323,15 +323,47 @@ class Field():
 
 
 class Player:
+    '''
+    have all we need from player: name and coordinates of shoot.
+    '''
     def __init__(self, name):
+        '''
+        initialise name of player.
+        :param name: str
+        '''
         self.__name = name
 
+    def read_position():
+        '''
+        take coordinates and change it in type we need.
+        from letter number to tuple(number, number)
+        :return:
+        '''
+        rpcoor = input('Please write coordinates as A7, J5 ')
+        #print(ord(rpcoor[0].lower()))
+        if rpcoor[0].lower() not in ascii_lowercase[:10]:
+            rpcoorconv = (-1, -1)
+        else:
+            rpcoorconv = (ord(rpcoor[0].lower()) - ord('a'), int(rpcoor[1:])-1)
 
+        while (rpcoorconv[0] > 9 or rpcoorconv[0] < 0 ) or (rpcoorconv[1] > 9 or rpcoorconv[1] < 0):
+            print("Your input is incorrect. Letter should be 'A' - 'J' and number 1 - 10 \n")
+            rpcoor = input('Please write coordinates as A7, J5 ')
+            if rpcoor[0].lower()  not in ascii_lowercase[:10]:
+                rpcoorconv = (-1, -1)
 
+            else:
+                rpcoorconv = (ord(rpcoor[0].lower()) - ord('a'), int(rpcoor[1:]) - 1)
 
+        return rpcoorconv
+
+'''
 n = Field()
 n.generate_field()
 
 
 n.shoot_at()
+'''
+player1 = Player
+print(player1.read_position())
 
